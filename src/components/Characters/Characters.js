@@ -12,7 +12,8 @@ export const Characters = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const [filteredValue, setFilterValue] = useState("");
+    let [filteredValue, filterArray] = useState("");
+    let [currentItems, setCurrentItems] = useState([])
 
     useEffect(() => {
         fetchCharacters();
@@ -22,28 +23,52 @@ export const Characters = () => {
         const data = await fetch("https://rickandmortyapi.com/api/character/");
         const characters = await data.json();
         setItems(characters.results);
+        setCurrentItems(characters.results);
         console.log(characters.results);
     };
 
     // Get current posts
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirsPost = indexOfLastPost - postsPerPage;
-    const currentPosts = items.slice(indexOfFirsPost, indexOfLastPost);
+    const currentPosts = currentItems.slice(indexOfFirsPost, indexOfLastPost);
 
     // Change page
     const paginate = pageNumber => setCurrentPage(pageNumber);
-
+    let newArr = [];
 
      function openModal(index) {
          setModalVisible(true);
          setCurrentIndex(index);
      }
 
-     const filterDropDown = currentPosts.map((item) => (
-         console.log("jhjn")
-     ));
-     function filterValue(e) {
-         console.log("sfdsds")
+     filterArray = (e, items) => {
+         filteredValue = e.target.value;
+         filterValue(items, filteredValue)
+     }
+
+     function filterValue(arr, filteredItem){
+        newArr = arr.filter(item => item.gender == filteredItem)
+        setCurrentItems(newArr)
+        return newArr
+     }
+
+     function unique(items){
+         let result = [];
+         let arr = items.map(item => item.gender)
+         for(let item of arr){
+             if(!result.includes(item)){
+                 result.push(item);
+             }
+         }
+         return(
+             <Fragment>
+                <select onChange={(e) => filterArray(e, items)}>
+                    {result.map((item) => (
+                        <option key={item} value={item}>{item}</option>
+                    ))}
+                </select>
+             </Fragment>
+         )
      }
 
     return (
@@ -51,11 +76,7 @@ export const Characters = () => {
             <div className="characters-card">
                 <div className="characters-filter">
                     <label> Filter
-                        <select onChange={() => filterValue()}>
-                            {currentPosts.map((item) => (
-                                <option key={item.id} value={item.gender}>{item.gender}</option>
-                             ))}
-                        </select>
+                        {unique(items)}
                     </label>
                 </div>
                 {currentPosts.map((item, itemIndex) => (
@@ -65,7 +86,8 @@ export const Characters = () => {
                             <img src={item.image} alt=""/>
                         </div>
                     </button>
-                ))}
+                ))
+            }
             </div>
             <Pagination
                 postsPerPage = {postsPerPage}
