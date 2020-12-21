@@ -12,6 +12,8 @@ export const Characters = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    const [filteredValue, setFilterValue] = useState("");
+
     useEffect(() => {
         fetchCharacters();
     }, []);
@@ -31,20 +33,29 @@ export const Characters = () => {
     // Change page
     const paginate = pageNumber => setCurrentPage(pageNumber);
 
-    const handler = () => {};
 
      function openModal(index) {
          setModalVisible(true);
          setCurrentIndex(index);
      }
 
+     const filterDropDown = currentPosts.map((item) => (
+         console.log("jhjn")
+     ));
+     function filterValue(e) {
+         console.log("sfdsds")
+     }
+
     return (
         <Fragment>
             <div className="characters-card">
                 <div className="characters-filter">
-                    <label> Filter:
-                        <input value="value2" onChange={handler}>
-                        </input>
+                    <label> Filter
+                        <select onChange={() => filterValue()}>
+                            {currentPosts.map((item) => (
+                                <option key={item.id} value={item.gender}>{item.gender}</option>
+                             ))}
+                        </select>
                     </label>
                 </div>
                 {currentPosts.map((item, itemIndex) => (
