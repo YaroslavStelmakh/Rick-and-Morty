@@ -41,20 +41,21 @@ export const Characters = () => {
          setCurrentIndex(index);
      }
 
-     filterArray = (e, items) => {
+     filterArray = (e, items, filterBy) => {
          filteredValue = e.target.value;
-         filterValue(items, filteredValue)
+         filterValue(items, filteredValue, filterBy)
      }
 
-     function filterValue(arr, filteredItem){
-        newArr = arr.filter(item => item.gender == filteredItem)
+     function filterValue(arr, filteredItem, filterBy){
+        console.log(arr)
+        newArr = arr.filter(item => item[filterBy] == filteredItem)
         setCurrentItems(newArr)
         return newArr
      }
 
-     function unique(items){
+     function unique(items, filterBy){
          let result = [];
-         let arr = items.map(item => item.gender)
+         let arr = items.map(item => item[filterBy])
          for(let item of arr){
              if(!result.includes(item)){
                  result.push(item);
@@ -62,7 +63,7 @@ export const Characters = () => {
          }
          return(
              <Fragment>
-                <select onChange={(e) => filterArray(e, items)}>
+                <select onChange={(e) => filterArray(e, items, filterBy)}>
                     {result.map((item) => (
                         <option key={item} value={item}>{item}</option>
                     ))}
@@ -75,8 +76,13 @@ export const Characters = () => {
         <Fragment>
             <div className="characters-card">
                 <div className="characters-filter">
-                    <label> Filter
-                        {unique(items)}
+                    <label> Filter by gender
+                        {unique(items, 'gender')}
+                    </label>
+                </div>
+                <div className="characters-filter">
+                    <label> Filter by status
+                        {unique(items, 'status')}
                     </label>
                 </div>
                 {currentPosts.map((item, itemIndex) => (
