@@ -12,8 +12,7 @@ export const Characters = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    let [filteredValue, filterArray] = useState("");
-    let [currentItems, setCurrentItems] = useState([])
+    const [currentItems, setCurrentItems] = useState([])
 
     useEffect(() => {
         fetchCharacters();
@@ -41,16 +40,10 @@ export const Characters = () => {
          setCurrentIndex(index);
      }
 
-     filterArray = (e, items, filterBy) => {
-         filteredValue = e.target.value;
-         filterValue(items, filteredValue, filterBy)
-     }
-
-     function filterValue(arr, filteredItem, filterBy){
-        console.log(arr)
-        newArr = arr.filter(item => item[filterBy] == filteredItem)
-        setCurrentItems(newArr)
-        return newArr
+     function filterValue(e, items, filterBy){
+        newArr = items.filter(item => item[filterBy] === e.target.value)
+        setCurrentItems(newArr);
+        return newArr;
      }
 
      function unique(items, filterBy){
@@ -63,7 +56,7 @@ export const Characters = () => {
          }
          return(
              <Fragment>
-                <select onChange={(e) => filterArray(e, items, filterBy)}>
+                <select onChange={(e) => filterValue(e, items, filterBy)}>
                     {result.map((item) => (
                         <option key={item} value={item}>{item}</option>
                     ))}
